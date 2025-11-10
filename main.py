@@ -15,12 +15,16 @@ collection = client.get_or_create_collection(
 
 
 
-sentences = ['test', 'I am a prickly pear', 'morbius', 'customEmbedder', 'hello world']
+sentences = ['The computer I am on is called Toaster', 'The computer is running on ToastOS', 'The creator of this code is called Derek']
 
 collection.upsert(documents=sentences, ids=[str(i) for i in range(len(sentences))], metadatas=[{"Name": i} for i in sentences])
+question = "What is this computer called?"
 
 results = collection.query(
-    query_embeddings=customEmbedder(['I like to try things']),  # Get the embeddings for the query
-    n_results=2  # Number of top results you want to retrieve
+    query_embeddings=customEmbedder([question]),  # Get the embeddings for the query
+    n_results=1  # Number of top results you want to retrieve
 )
-print(results)
+context = results['documents'][0][0]
+
+chatbot = Qwen3Chat()
+print(chatbot(question, context))
