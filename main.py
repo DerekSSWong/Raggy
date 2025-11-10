@@ -1,16 +1,26 @@
-# This is a sample Python script.
+from CodeBuffer import *
+import chromadb
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+persist_dir = './vec_db'
+if not os.path.exists(persist_dir):
+    os.makedirs(persist_dir)
+
+client = chromadb.PersistentClient(path=persist_dir)
+customEmbedder = Qwen3Embedder()
+collection = client.get_or_create_collection(
+    name="collection",
+    embedding_function= customEmbedder
+)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
+sentences = ['test', 'I am a prickly pear', 'morbius', 'customEmbedder', 'hello world']
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+collection.upsert(documents=sentences, ids=[str(i) for i in range(len(sentences))], metadatas=[{"Name": i} for i in sentences])
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+results = collection.query(
+    query_embeddings=customEmbedder(['I like to try things']),  # Get the embeddings for the query
+    n_results=2  # Number of top results you want to retrieve
+)
+print(results)
