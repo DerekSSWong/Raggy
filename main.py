@@ -1,13 +1,17 @@
-from CodeBuffer import *
+from HF_Models import *
+from VecDB_Functions import *
+from Chat_Functions import *
 import chromadb
 import os
-import uuid
+import time
 
 ########### INITIATION
+initiationStart = time.time()
 customEmbedder = Qwen3Embedder()
 chatbot = Qwen3Chat()
 
 persist_dir = './vec_db'
+doc_dir = './documents'
 if not os.path.exists(persist_dir):
     os.makedirs(persist_dir)
 client = chromadb.PersistentClient(path=persist_dir)
@@ -16,39 +20,54 @@ collection = client.get_or_create_collection(
     embedding_function= customEmbedder
 )
 
-
-########## DOC FORMAT AND INGEST
-def split_string_by_length(s, length):
-    if length <= 0:
-        raise ValueError("Length must be a positive integer")
-
-    return [s[i:i+length] for i in range(0, len(s), length)]
-
-def batch_upsert(coll, documents, batch_size):
-    chunks = [documents[i:i + batch_size] for i in range(0, len(documents), batch_size)]
-    for i in chunks:
-        coll.upsert(documents=i, ids=[str(uuid.uuid4()) for _ in range(len(i))])
-
-docPath = "./documents/Dracula.md"
-docString = open(docPath, 'r').read()
-
-sentences = split_string_by_length(docString, 512)
-
-# collection.upsert(documents=sentences, ids=[str(i) for i in range(len(sentences))])
-batch_upsert(collection, sentences, 10)
+initiationEnd = time.time()
+print(f"Initiation took {initiationEnd - initiationStart:.2f} seconds")
 
 
+def help_print():
+    print('---------HELP--------')
+    print(f"{len(list_documents(collection))} Documents within system")
+    print("/ask followed by a question to begin Q&A")
+    print("/list to list all documents")
+    print("/import followed by document name to import specific document, or /import all to import all documents to database")
+    print("/help to see this again")
+    print("/exit to close program\n")
+    return
+
+def menu_loop():
+    user_input = input()
+
+    if user_input[:4] =="/ask":
+        question = user_input.replace("/ask", "").strip()
+        ask(question, chatbot, customEmbedder, collection)
+        #Initialise chatbot here
+
+    elif user_input == "/list":
+        print('\n'.join(list_documents(collection)))
+
+    elif user_input[:7] == "/import":
+        docName = user_input.replace("/import", "").strip()
+        if docName == "all":
+            import_all(collection, doc_dir)
+        else:
+            try:
+                import_doc(collection, doc_dir, docName)
+            except Exception as e:
+                print(e)
+
+    elif user_input == "/help":
+        help_print()
+    elif user_input == "/exit":
+        print("Exiting program")
+        return False
+    else:
+        print("Unknown command, please try again")
+    print("\n")
+    return True
 
 
-##########RETRIEVAL AND CHATTING
-question = "Who's journal is this"
-
-results = collection.query(
-    query_embeddings=customEmbedder([question]),  # Get the embeddings for the query
-    n_results=10  # Number of top results you want to retrieve
-)
-
-context = "" .join(results['documents'][0])
-
-
-print(chatbot(question, context))
+help_print()
+while True:
+    if menu_loop():
+        pass
+    else: break
