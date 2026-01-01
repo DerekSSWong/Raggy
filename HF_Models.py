@@ -48,12 +48,20 @@ class Qwen3Chat:
 
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, cache_dir=cacheDir)
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_name,
-            torch_dtype="auto",
-            device_map="auto",
-            cache_dir=cacheDir
-        ).cuda()
+        if torch.cuda.is_available():
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_name,
+                torch_dtype="auto",
+                device_map="auto",
+                cache_dir=cacheDir
+            ).cuda()
+        else:
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_name,
+                torch_dtype="auto",
+                device_map="auto",
+                cache_dir=cacheDir
+            )
 
     def __call__(self, question, context):
         # prepare the model input

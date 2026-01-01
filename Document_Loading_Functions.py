@@ -1,5 +1,5 @@
 import os
-import fitz
+import pymupdf
 
 def read_file(docDir, docName):
     docDict = {}
@@ -10,7 +10,7 @@ def read_file(docDir, docName):
             with open(docPath, "r", errors="ignore") as f:
                 docDict[docName] = f.read()
         elif fileExt == "pdf":
-            doc = fitz.open(docPath)
+            doc = pymupdf.open(docPath)
             stringOut = ""
             for page in doc:
                 stringOut += page.get_text()

@@ -6,15 +6,28 @@ import os
 from HF_Models import *
 from Document_Loading_Functions import *
 
+#VRAM:Batch Size
+#4:1
+#8:8
+#12:16
 def ingest_doc(coll, docDict):
+
+    batch_size = 1
+    if torch.cuda.is_available():
+        gb_available = round(torch.cuda.get_device_properties(0).total_memory/1024**3)
+        if gb_available >= 12:
+            batch_size = 16
+        elif gb_available >= 8:
+            batch_size = 8
+
     for i in docDict.keys():
-        print(f'Ingesting {i}')
+        print(f'Ingesting {i}, batch size: {batch_size}')
         delete_doc(coll, i)
         ingestStart = time.time()
         chunked_text = chunk_documents(docDict[i], 500, 100)
-        batch_upsert(coll, chunked_text, 1,i)
+        batch_upsert(coll, chunked_text, batch_size,i)
         ingestEnd = time.time()
-        print(f"Finished ingesting {i}, took {ingestEnd - ingestStart:.2f} seconds")
+        print(f"Finished importing {i}, took {ingestEnd - ingestStart:.2f} seconds")
 
 def import_all(coll, docDir):
     docDict = read_dir(docDir)
