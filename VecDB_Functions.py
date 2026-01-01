@@ -11,8 +11,8 @@ def ingest_doc(coll, docDict):
         print(f'Ingesting {i}')
         delete_doc(coll, i)
         ingestStart = time.time()
-        chunked_text = chunk_documents(docDict[i], 1024, 64)
-        batch_upsert(coll, chunked_text, 5,i)
+        chunked_text = chunk_documents(docDict[i], 500, 100)
+        batch_upsert(coll, chunked_text, 1,i)
         ingestEnd = time.time()
         print(f"Finished ingesting {i}, took {ingestEnd - ingestStart:.2f} seconds")
 

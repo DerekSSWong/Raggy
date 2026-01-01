@@ -20,14 +20,17 @@ class Qwen3Embedder:
 
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained('Qwen/Qwen3-Embedding-0.6B', padding_side='left', cache_dir=cacheDir)
-        self.model = AutoModel.from_pretrained('Qwen/Qwen3-Embedding-0.6B',cache_dir=cacheDir,dtype=torch.float16).cuda()
+        if torch.cuda.is_available():
+            self.model = AutoModel.from_pretrained('Qwen/Qwen3-Embedding-0.6B', cache_dir=cacheDir, dtype=torch.float16).cuda()
+        else:
+            self.model = AutoModel.from_pretrained('Qwen/Qwen3-Embedding-0.6B', cache_dir=cacheDir, dtype=torch.float16)
 
     def __call__(self, input: Documents) -> Embeddings:
         self.batch_dict = self.tokenizer(
             input,
             padding=True,
             truncation=True,
-            max_length=512,
+            max_length=100,
             return_tensors="pt",
         )
         self.batch_dict.to(self.model.device)
