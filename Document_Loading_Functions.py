@@ -1,5 +1,6 @@
 import os
 import pymupdf
+from docx import Document
 
 def read_file(docDir, docName):
     docDict = {}
@@ -15,6 +16,12 @@ def read_file(docDir, docName):
             for page in doc:
                 stringOut += page.get_text()
             docDict[docName] = stringOut
+        elif fileExt == "docx":
+            doc = Document(docPath)
+            full_text = []
+            for para in doc.paragraphs:
+                full_text.append(para.text)
+            docDict[docName] = "\n".join(full_text)
     return docDict
 
 def read_dir(docDir):

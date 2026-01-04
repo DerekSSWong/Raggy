@@ -51,14 +51,14 @@ class Qwen3Chat:
         if torch.cuda.is_available():
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_name,
-                torch_dtype="auto",
+                dtype="auto",
                 device_map="auto",
                 cache_dir=cacheDir
             ).cuda()
         else:
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_name,
-                torch_dtype="auto",
+                dtype="auto",
                 device_map="auto",
                 cache_dir=cacheDir
             )

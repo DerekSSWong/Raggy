@@ -4,3 +4,4 @@ jedi==0.19.2
 langchain-text-splitters==1.1.0
 PyMuPDF==1.26.7
 transformers==4.57.3
+python-docx==1.2.0
