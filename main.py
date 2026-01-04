@@ -14,6 +14,8 @@ persist_dir = './vec_db'
 doc_dir = './documents'
 if not os.path.exists(persist_dir):
     os.makedirs(persist_dir)
+if not os.path.exists(doc_dir):
+    os.makedirs(doc_dir)
 client = chromadb.PersistentClient(path=persist_dir)
 collection = client.get_or_create_collection(
     name="collection",
