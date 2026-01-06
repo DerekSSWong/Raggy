@@ -17,7 +17,7 @@ A lightweight RAG application. Uses a local Qwen0.6B model to perform embedding 
 - Clone this repository, or download it as .zip.
 - Run Powershell as admin
 - Enter: ``set-executionpolicy remotesigned``
-- The command above allows the custom install-script to be run on your PC.
+- The command above allows the setup script to be run on your PC.
 - **If** you chose to download the project as a zip:
   - unzip it but keep the code in the "Raggy-main" folder
   - Run Powershell within the folder and enter the following command:
