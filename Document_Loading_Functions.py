@@ -7,7 +7,7 @@ def read_file(docDir, docName):
     fileExt = docName.split(".")[-1]
     docPath = os.path.join(docDir, docName)
     if os.path.isfile(docPath):
-        if fileExt == "md":
+        if fileExt == "md" or fileExt == "txt":
             with open(docPath, "r", errors="ignore") as f:
                 docDict[docName] = f.read()
         elif fileExt == "pdf":
