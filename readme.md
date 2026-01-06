@@ -19,7 +19,7 @@ A lightweight RAG application. Uses a local Qwen0.6B model to perform embedding 
 - Enter: ``set-executionpolicy remotesigned``
 - The command above allows the setup script to be run on your PC.
 - **If** you chose to download the project as a zip:
-  - unzip it but keep the code in the "Raggy-main" folder
+  - Unzip it but keep the code in the "Raggy-main" folder
   - Run Powershell within the folder and enter the following command:
   - ``Unblock-File .\setup_windows.ps1, .\run_windows.ps1``
 - To start the setup script, right-click on ``setup_windows.ps1`` and run script with Powershell
