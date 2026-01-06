@@ -1,6 +1,6 @@
 # Raggy
 
-A lightweight RAG application. Uses a local Qwen0.6B model to perform embedding and Q&A.
+A lightweight RAG application. Uses a local Qwen3-0.6B model to perform embedding and Q&A.
 
 ## Features
 - Capable of reading text files (.txt), markdowns (.md), word documents (.docx), and .pdf files.
