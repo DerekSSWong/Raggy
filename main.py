@@ -29,9 +29,11 @@ print(f"Initiation took {initiationEnd - initiationStart:.2f} seconds")
 def help_print():
     print('---------HELP--------')
     print(f"{len(list_documents(collection))} Documents within system")
+    print("To run a command, do a forward slash '/' followed by a keyword, then press enter. Commands include:")
     print("/ask followed by a question to begin Q&A")
     print("/list to list all documents")
     print("/import followed by document name to import specific document, or /import all to import all documents to database")
+    print("/system to see what hardware the application is running on")
     print("/help to see this again")
     print("/exit to close program\n")
     return
@@ -59,6 +61,12 @@ def menu_loop():
 
     elif user_input == "/help":
         help_print()
+    elif user_input == "/system":
+        if torch.cuda.is_available():
+            print("CUDA Version: " + str(torch.version.cuda))
+            print("VRAM Available:" + str(round(torch.cuda.get_device_properties(0).total_memory/1024**3))+ "GB")
+        else:
+            print("CUDA not detected, running on CPU")
     elif user_input == "/exit":
         print("Exiting program")
         return False
